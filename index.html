@@ -1,0 +1,232 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLA BLA BLA Festival Ticketing</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+}
+
+/* CONTAINER */
+.wrap{
+    max-width:850px;
+    margin:20px auto;
+    background:#fff;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.1);
+    overflow:hidden;
+}
+
+/* ===== HEADER BANNER ===== */
+.header{
+    position:relative;
+    height:230px;
+    background:url('banner-event.jpg') center/cover no-repeat;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:#fff;
+}
+
+/* overlay */
+.header::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.55);
+}
+
+/* text */
+.header-content{
+    position:relative;
+    z-index:2;
+}
+
+.header h1{
+    margin:0;
+    font-size:30px;
+    font-weight:bold;
+}
+.header h2{
+    margin:5px 0;
+    font-size:18px;
+}
+.header p{
+    font-size:14px;
+}
+
+/* STEP */
+.step{display:none;padding:30px}
+.active{display:block}
+
+/* CARD */
+.card{
+    border:2px solid #ddd;
+    border-radius:15px;
+    padding:18px;
+    margin:12px 0;
+    cursor:pointer;
+    transition:.2s;
+}
+.card:hover{transform:scale(1.02)}
+.selected{border-color:#16a34a;background:#f0fff4}
+
+/* BADGE */
+.badge{
+    float:right;
+    background:#d1fae5;
+    color:#065f46;
+    padding:5px 10px;
+    border-radius:10px;
+    font-size:12px;
+}
+
+/* INPUT */
+input,select{
+    width:100%;
+    padding:12px;
+    margin:8px 0 15px;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+/* BUTTON */
+button{
+    padding:12px 18px;
+    border:none;
+    border-radius:10px;
+    background:#16a34a;
+    color:#fff;
+    cursor:pointer;
+}
+.secondary{
+    background:#ddd;
+    color:#000;
+}
+
+/* QRIS */
+.qris{
+    max-width:280px;
+    width:100%;
+    display:block;
+    margin:20px auto;
+}
+.center{text-align:center}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-content">
+        <h1>BLA BLA BLA FESTIVAL</h1>
+        <h2>KUBU RAYA - PONTIANAK</h2>
+        <p>QUBU RESORT • Sunday, April 19, 2026 • 13:00 - 22:00</p>
+    </div>
+</div>
+
+<!-- STEP 1 -->
+<div id="step1" class="step active">
+<h2>Pilih Tiket</h2>
+
+<div class="card selected" onclick="pick(this,450000)">
+BUNDLING TELKOMSEL VIP
+<span class="badge">AVAILABLE</span><br>Rp450.000
+</div>
+
+<div class="card" onclick="pick(this,300000)">
+NORMAL SALE REGULER
+<span class="badge">AVAILABLE</span><br>Rp300.000
+</div>
+
+<div class="card" onclick="pick(this,400000)">
+NORMAL SALE VIP
+<span class="badge">AVAILABLE</span><br>Rp400.000
+</div>
+
+<h2>Data Pembeli</h2>
+<input placeholder="Nama Lengkap">
+<input placeholder="Email">
+<input placeholder="No WhatsApp">
+
+<label>Jumlah Ticket</label>
+<select id="qty" onchange="updateTotal()">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+</select>
+
+<p>Total: <b id="total">Rp450.000</b></p>
+<button onclick="go(2)">Lanjut Pembayaran</button>
+</div>
+
+<!-- STEP 2 -->
+<div id="step2" class="step">
+<h2>Pembayaran QRIS</h2>
+
+<img src="qris-ticket-digital.jpg" class="qris" alt="QRIS">
+
+<p class="center">Transfer sesuai nominal:</p>
+<h2 class="center" id="total2">Rp450.000</h2>
+
+<label>Upload Bukti Pembayaran</label>
+<input type="file">
+
+<br>
+<button class="secondary" onclick="go(1)">Kembali</button>
+<button onclick="go(3)">Kirim Pembayaran</button>
+</div>
+
+<!-- STEP 3 -->
+<div id="step3" class="step center">
+<h1>Terima Kasih 🎉</h1>
+<p>Pembelian berhasil dikirim untuk verifikasi.</p>
+<button onclick="go(1)">Kembali ke Awal</button>
+</div>
+
+</div>
+
+<script>
+let price = 450000;
+
+function pick(el,p){
+    document.querySelectorAll('.card').forEach(c=>c.classList.remove('selected'));
+    el.classList.add('selected');
+    price = p;
+    updateTotal();
+}
+
+function updateTotal(){
+    let q = parseInt(document.getElementById('qty').value) || 1;
+    let total = price * q;
+    let format = 'Rp' + total.toLocaleString('id-ID');
+    document.getElementById('total').innerText = format;
+    document.getElementById('total2').innerText = format;
+}
+
+function go(step){
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    document.getElementById('step'+step).classList.add('active');
+}
+</script>
+
+</body>
+</html>
+```
